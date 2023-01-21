@@ -3,22 +3,30 @@ import Homepage from "./components/homepage/homepage"
 import Login from "./components/login/login"
 import Register from "./components/register/register"
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
-import { useState } from 'react';
+import { useState,useEffect } from 'react';
 
 function App() {
 
-  const [ user, setLoginUser] = useState({})
+  const [ user, setLoginUser] = useState({});
+    useEffect(() => {
+    setLoginUser(JSON.parse(localStorage.getItem("MyUser")));
+  }, []);
+
+  const updateUser = (user) => {
+    localStorage.setItem("MyUser", JSON.stringify(user));
+    setLoginUser(user);
+  };
   return (
     <div className="App">
       <Router>
         <Switch>
           <Route exact path="/">
             {
-              user && user._id ? <Homepage setLoginUser={setLoginUser} /> : <Login setLoginUser={setLoginUser}/>
+              user && user._id ? <Homepage updateUser={updateUser} /> : <Login updateUser={updateUser}/>
             }
           </Route>
           <Route path="/login">
-            <Login setLoginUser={setLoginUser}/>
+            <Login updateUser={updateUser}/>
           </Route>
           <Route path="/register">
             <Register />
